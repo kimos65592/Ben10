@@ -1,11 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar">
 <head>
-  <title>Ben Voice AI</title>
+<meta charset="UTF-8">
+<title>Ben AI</title>
+
+<style>
+body {
+  text-align: center;
+  font-family: Arial;
+  background: #111;
+  color: white;
+}
+
+#avatar {
+  width: 250px;
+  transition: 0.2s;
+}
+
+.talking {
+  animation: talk 0.3s infinite;
+}
+
+@keyframes talk {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+
+button {
+  padding: 15px 30px;
+  font-size: 18px;
+  margin-top: 20px;
+  background: green;
+  color: white;
+  border: none;
+  border-radius: 10px;
+}
+</style>
+
 </head>
 <body>
 
 <h2>🎤 اضغط واتكلم</h2>
+
+<img id="avatar" src="ben.png">
+
+<br>
+
 <button onclick="startListening()">ابدأ</button>
 
 <script src="script.js"></script>
