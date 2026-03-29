@@ -1,0 +1,35 @@
+body {
+  margin: 0;
+  background: #000;
+  overflow: hidden;
+  font-family: Arial;
+}
+
+#container {
+  width: 100vw;
+  height: 100vh;
+}
+
+/* UI */
+.ui {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.7);
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid #0f0;
+  box-shadow: 0 0 20px #0f0;
+  text-align: center;
+  color: white;
+}
+
+button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background: #0f0;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+}
