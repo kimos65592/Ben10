@@ -1,4 +1,4 @@
-const API_KEY = "YOUR_API_KEY";
+const API_KEY = "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";
 
 const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
 recognition.lang = "ar-EG";
