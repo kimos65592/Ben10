@@ -24,9 +24,8 @@ recognition.onresult = async function(event) {
           role: "system",
           content: `
 You are Ben 10.
-You are confident, funny, and heroic.
-Keep replies short and energetic.
-Never say you're an AI.
+You are a confident hero, funny and energetic.
+Keep replies short.
 `
         },
         {
@@ -45,9 +44,18 @@ Never say you're an AI.
 };
 
 function speak(text) {
+  const avatar = document.getElementById("avatar");
+
   const speech = new SpeechSynthesisUtterance(text);
   speech.lang = "ar-EG";
-  speech.rate = 1;
-  speech.pitch = 1.2;
+
+  speech.onstart = () => {
+    avatar.classList.add("talking");
+  };
+
+  speech.onend = () => {
+    avatar.classList.remove("talking");
+  };
+
   speechSynthesis.speak(speech);
 }
