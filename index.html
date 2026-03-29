@@ -1,55 +1,33 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Ben AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ben AI 3D</title>
 
-<style>
-body {
-  text-align: center;
-  font-family: Arial;
-  background: #111;
-  color: white;
-}
+<link rel="stylesheet" href="style.css">
 
-#avatar {
-  width: 250px;
-  transition: 0.2s;
-}
-
-.talking {
-  animation: talk 0.3s infinite;
-}
-
-@keyframes talk {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-6px); }
-  100% { transform: translateY(0px); }
-}
-
-button {
-  padding: 15px 30px;
-  font-size: 18px;
-  margin-top: 20px;
-  background: green;
-  color: white;
-  border: none;
-  border-radius: 10px;
-}
-</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/libs/fflate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/loaders/FBXLoader.js"></script>
 
 </head>
 <body>
 
-<h2>🎤 اضغط واتكلم</h2>
+<div id="container"></div>
 
-<img id="avatar" src="Untitled design.png">
+<!-- UI -->
+<div class="ui">
+  <h2>🟢 Ben AI</h2>
+  <button onclick="startListening()">🎤 تكلم</button>
+  <p id="status">جاهز...</p>
 
-<br>
+  <input type="file" id="fbxInput" accept=".fbx">
+  <input type="file" id="texInput" accept="image/*">
+  <button id="applyBtn">تحميل الشخصية</button>
+</div>
 
-<button onclick="startListening()">ابدأ</button>
-
-<script src="script.js"></script>
+<script src="app.js"></script>
 
 </body>
 </html>
