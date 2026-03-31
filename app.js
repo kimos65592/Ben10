@@ -1,11 +1,11 @@
-// ====== إعداد Three.js ======
+// ====== Three.js ======
 let scene, camera, renderer, model, mixer, clock;
 
 function init() {
   scene = new THREE.Scene();
 
   camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight,1,2000);
-  camera.position.set(0,0,500);
+  camera.position.set(0, 100, 500);
 
   renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -14,40 +14,40 @@ function init() {
   document.getElementById("container").appendChild(renderer.domElement);
 
   scene.add(new THREE.AmbientLight(0xffffff,1.2));
+
   const light = new THREE.DirectionalLight(0xffffff,1);
   light.position.set(10,10,10);
   scene.add(light);
 
   clock = new THREE.Clock();
+
+  loadModel();
   animate();
 }
 
-document.getElementById("applyBtn").onclick = function() {
-  const fbxFile = document.getElementById('fbxInput').files[0];
-  const texFile = document.getElementById('texInput').files[0];
+// تحميل الموديل
+function loadModel() {
 
-  if (!fbxFile || !texFile) return alert("ارفع الملفين!");
-
+  const loader = new THREE.FBXLoader();
   const textureLoader = new THREE.TextureLoader();
-  const fbxLoader = new THREE.FBXLoader();
 
-  const readerTex = new FileReader();
-  readerTex.onload = function(e) {
-    const texture = textureLoader.load(e.target.result);
-    texture.encoding = THREE.sRGBEncoding;
-    texture.flipY = false;
+  loader.load("model.fbx", function(object){
 
-    const readerFbx = new FileReader();
-    readerFbx.onload = function(fe) {
+    model = object;
 
-      if (model) scene.remove(model);
+    textureLoader.load("texture.png", function(texture){
 
-      model = fbxLoader.parse(fe.target.result);
+      texture.encoding = THREE.sRGBEncoding;
+      texture.flipY = false;
 
       model.traverse(child=>{
         if(child.isMesh){
           child.material.map = texture;
           child.material.color.set(0xffffff);
+
+          // ✨ Glow أخضر
+          child.material.emissive = new THREE.Color(0x00ff00);
+          child.material.emissiveIntensity = 0.5;
         }
       });
 
@@ -63,16 +63,14 @@ document.getElementById("applyBtn").onclick = function() {
       if(model.animations.length>0){
         mixer.clipAction(model.animations[0]).play();
       }
-    };
 
-    readerFbx.readAsArrayBuffer(fbxFile);
-  };
+    });
 
-  readerTex.readAsDataURL(texFile);
-};
+  });
+}
 
 // ====== AI ======
-const API_KEY = "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"; // حط مفتاحك هنا
+const API_KEY = "YOUR_API_KEY";
 
 const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
 recognition.lang = "ar-EG";
@@ -87,6 +85,16 @@ recognition.onresult = async function(event){
 
   document.getElementById("status").innerText="🧠 بفكر...";
 
+  speak("ثانية 😏");
+
+  const reply = await askGPT(userText);
+
+  speak(reply);
+};
+
+// GPT
+async function askGPT(text){
+
   const res = await fetch("https://api.openai.com/v1/chat/completions",{
     method:"POST",
     headers:{
@@ -97,20 +105,24 @@ recognition.onresult = async function(event){
       model:"gpt-4o-mini",
       messages:[
         {role:"system",content:"You are Ben 10. Heroic, funny, short replies."},
-        {role:"user",content:userText}
+        {role:"user",content:text}
       ],
-      max_tokens:80
+      max_tokens:50
     })
   });
 
   const data = await res.json();
-  const reply = data.choices[0].message.content;
 
-  speak(reply);
-};
+  try{
+    return data.choices[0].message.content;
+  }catch{
+    return "مش سامعك كويس!";
+  }
+}
 
-// ====== الصوت + حركة ======
+// ====== صوت + حركة ======
 function speak(text){
+
   document.getElementById("status").innerText="🗣️ بيتكلم...";
 
   const speech = new SpeechSynthesisUtterance(text);
@@ -129,14 +141,14 @@ function speak(text){
   speechSynthesis.speak(speech);
 }
 
-// ====== Animation Loop ======
+// ====== Animation ======
 function animate(){
   requestAnimationFrame(animate);
 
   if(mixer) mixer.update(clock.getDelta());
 
   if(model){
-    model.rotation.y += 0.005;
+    model.rotation.y += 0.003;
   }
 
   renderer.render(scene,camera);
