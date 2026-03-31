@@ -35,7 +35,7 @@ function loadModel() {
 
     model = object;
 
-    textureLoader.load("texture.png", function(texture){
+    textureLoader.load("ben_d.png_baseColor.png", function(texture){
 
       texture.encoding = THREE.sRGBEncoding;
       texture.flipY = false;
