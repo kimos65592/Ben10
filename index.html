@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ben AI 3D</title>
+<title>Ben 3D AI</title>
 
 <link rel="stylesheet" href="style.css">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/libs/fflate.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/loaders/FBXLoader.js"></script>
 
 </head>
@@ -16,15 +15,10 @@
 
 <div id="container"></div>
 
-<!-- UI -->
 <div class="ui">
   <h2>🟢 Ben AI</h2>
   <button onclick="startListening()">🎤 تكلم</button>
   <p id="status">جاهز...</p>
-
-  <input type="file" id="fbxInput" accept=".fbx">
-  <input type="file" id="texInput" accept="image/*">
-  <button id="applyBtn">تحميل الشخصية</button>
 </div>
 
 <script src="app.js"></script>
