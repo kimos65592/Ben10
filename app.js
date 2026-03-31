@@ -31,7 +31,7 @@ function loadModel() {
   const loader = new THREE.FBXLoader();
   const textureLoader = new THREE.TextureLoader();
 
-  loader.load("model.fbx", function(object){
+  loader.load("Ben10.fbx", function(object){
 
     model = object;
 
