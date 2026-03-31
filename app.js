@@ -1,11 +1,11 @@
-// ====== Three.js ======
 let scene, camera, renderer, model, mixer, clock;
 
+// ====== INIT ======
 function init() {
   scene = new THREE.Scene();
 
-  camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight,1,2000);
-  camera.position.set(0, 100, 500);
+  camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight,1,5000);
+  camera.position.set(0, 200, 800);
 
   renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -13,6 +13,7 @@ function init() {
 
   document.getElementById("container").appendChild(renderer.domElement);
 
+  // إضاءة
   scene.add(new THREE.AmbientLight(0xffffff,1.2));
 
   const light = new THREE.DirectionalLight(0xffffff,1);
@@ -25,47 +26,61 @@ function init() {
   animate();
 }
 
-// تحميل الموديل
+// ====== تحميل الموديل ======
 function loadModel() {
 
   const loader = new THREE.FBXLoader();
   const textureLoader = new THREE.TextureLoader();
 
-  loader.load("Ben10.fbx", function(object){
+  loader.load("model.fbx", function(object){
 
     model = object;
 
-    textureLoader.load("ben_d.png_baseColor.png", function(texture){
+    textureLoader.load("texture.png", function(texture){
 
       texture.encoding = THREE.sRGBEncoding;
-      texture.flipY = false;
 
       model.traverse(child=>{
         if(child.isMesh){
           child.material.map = texture;
           child.material.color.set(0xffffff);
+          child.material.needsUpdate = true;
 
-          // ✨ Glow أخضر
+          // Glow أخضر 🔥
           child.material.emissive = new THREE.Color(0x00ff00);
-          child.material.emissiveIntensity = 0.5;
+          child.material.emissiveIntensity = 0.4;
         }
       });
 
+      // 🔥 ضبط الحجم والمكان تلقائي
       const box = new THREE.Box3().setFromObject(model);
+      const size = box.getSize(new THREE.Vector3());
       const center = box.getCenter(new THREE.Vector3());
-      model.position.sub(center);
 
-      model.scale.set(1.5,1.5,1.5);
+      model.position.x -= center.x;
+      model.position.y -= center.y;
+      model.position.z -= center.z;
+
+      const scale = 300 / Math.max(size.x, size.y, size.z);
+      model.scale.set(scale, scale, scale);
 
       scene.add(model);
 
+      // Animation
       mixer = new THREE.AnimationMixer(model);
-      if(model.animations.length>0){
+      if(model.animations.length > 0){
         mixer.clipAction(model.animations[0]).play();
       }
 
+      // كاميرا تبص عليه
+      camera.lookAt(0,0,0);
+
+      // 🔥 اختبار
+      scene.add(new THREE.AxesHelper(200));
     });
 
+  }, undefined, function(error){
+    console.error("❌ فشل تحميل الموديل:", error);
   });
 }
 
@@ -92,7 +107,6 @@ recognition.onresult = async function(event){
   speak(reply);
 };
 
-// GPT
 async function askGPT(text){
 
   const res = await fetch("https://api.openai.com/v1/chat/completions",{
@@ -104,7 +118,7 @@ async function askGPT(text){
     body:JSON.stringify({
       model:"gpt-4o-mini",
       messages:[
-        {role:"system",content:"You are Ben 10. Heroic, funny, short replies."},
+        {role:"system",content:"You are Ben 10. Short funny hero replies."},
         {role:"user",content:text}
       ],
       max_tokens:50
@@ -148,7 +162,7 @@ function animate(){
   if(mixer) mixer.update(clock.getDelta());
 
   if(model){
-    model.rotation.y += 0.003;
+    model.rotation.y += 0.002;
   }
 
   renderer.render(scene,camera);
