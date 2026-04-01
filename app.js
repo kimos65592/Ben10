@@ -32,7 +32,7 @@ function loadModel(name){
   const textureLoader = new THREE.TextureLoader();
 
   let fbx = name === "ben" ? "ben.fbx" : "fourarm.obj";
-  let tex = name === "ben" ? "ben.png" : "fourarms.png";
+  let tex = name === "ben" ? "ben.png" : "smoothfull3Shape_baseColor (1).png";
 
   loader.load(fbx, function(object){
 
