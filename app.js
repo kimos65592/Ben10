@@ -1,14 +1,12 @@
 let scene, camera, renderer, model, mixer, clock;
-let current = "ben";
 
-// ===== INIT =====
 function init() {
   scene = new THREE.Scene();
 
   camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight,1,5000);
   camera.position.set(0, 200, 800);
 
-  renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+  renderer = new THREE.WebGLRenderer({ antialias:true });
   renderer.setSize(window.innerWidth, window.innerHeight);
 
   document.getElementById("container").appendChild(renderer.domElement);
@@ -21,26 +19,38 @@ function init() {
 
   clock = new THREE.Clock();
 
-  loadModel("ben");
   animate();
 }
 
-// ===== تحميل الموديل =====
-function loadModel(name){
+// تحميل من الجهاز
+function loadCustomModel(){
+
+  const fbxFile = document.getElementById("fbxInput").files[0];
+  const texFile = document.getElementById("texInput").files[0];
+
+  if(!fbxFile || !texFile){
+    alert("ارفع الملفات الأول");
+    return;
+  }
 
   const loader = new THREE.FBXLoader();
   const textureLoader = new THREE.TextureLoader();
 
-  let fbx = name === "ben" ? "ben.fbx" : "fourarm.obj";
-  let tex = name === "ben" ? "ben.png" : "smoothfull3Shape_baseColor (1).png";
+  const readerFbx = new FileReader();
+  readerFbx.readAsArrayBuffer(fbxFile);
 
-  loader.load(fbx, function(object){
+  readerFbx.onload = function(e){
 
     if(model) scene.remove(model);
 
-    model = object;
+    model = loader.parse(e.target.result);
 
-    textureLoader.load(tex, function(texture){
+    const readerTex = new FileReader();
+    readerTex.readAsDataURL(texFile);
+
+    readerTex.onload = function(te){
+
+      const texture = textureLoader.load(te.target.result);
 
       model.traverse(child=>{
         if(child.isMesh){
@@ -69,18 +79,11 @@ function loadModel(name){
         mixer.clipAction(model.animations[0]).play();
       }
 
-    });
-
-  });
+    };
+  };
 }
 
-// ===== التحول =====
-function switchModel(){
-  current = current === "ben" ? "fourarms" : "ben";
-  loadModel(current);
-}
-
-// ===== AI =====
+// AI
 const API_KEY = "YOUR_API_KEY";
 
 const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
@@ -112,7 +115,7 @@ async function askGPT(text){
     body:JSON.stringify({
       model:"gpt-4o-mini",
       messages:[
-        {role:"system",content:"You are Ben 10. Short heroic replies."},
+        {role:"system",content:"You are Ben 10. Short replies."},
         {role:"user",content:text}
       ],
       max_tokens:50
@@ -120,11 +123,10 @@ async function askGPT(text){
   });
 
   const data = await res.json();
-
   return data.choices?.[0]?.message?.content || "مش فاهمك";
 }
 
-// ===== صوت =====
+// صوت
 function speak(text){
   document.getElementById("status").innerText="🗣️ بيتكلم...";
 
@@ -142,7 +144,7 @@ function speak(text){
   speechSynthesis.speak(speech);
 }
 
-// ===== Animation =====
+// Animation
 function animate(){
   requestAnimationFrame(animate);
 
