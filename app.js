@@ -31,7 +31,7 @@ function loadModel(name){
   const loader = new THREE.FBXLoader();
   const textureLoader = new THREE.TextureLoader();
 
-  let fbx = name === "ben" ? "ben.fbx" : "fourarms.fbx";
+  let fbx = name === "ben" ? "ben.fbx" : "fourarm.obj";
   let tex = name === "ben" ? "ben.png" : "fourarms.png";
 
   loader.load(fbx, function(object){
